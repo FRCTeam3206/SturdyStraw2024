@@ -8,7 +8,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
@@ -35,7 +35,7 @@ public class Robot extends TimedRobot {
   private CANSparkMax backRight = new CANSparkMax(4, MotorType.kBrushless);
   private CANSparkMax backLeft = new CANSparkMax(1, MotorType.kBrushless);
   private DifferentialDrive drive;
-  Joystick stick = new Joystick(0);
+  XboxController controller = new XboxController(0);
   Compressor phCompressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
   private Lights lights = new Lights();
 
@@ -126,7 +126,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    drive.arcadeDrive(-stick.getY() * .75, -stick.getZ() * .75);
+    drive.arcadeDrive(-controller.getLeftY() * .75, -controller.getRightX() * .75);
     // System.out.println(stick.getZ() + " " + stick.getY());
   }
 
