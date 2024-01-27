@@ -5,16 +5,11 @@
 package frc.robot;
 
 import com.revrobotics.CANSparkMax;
-import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.Compressor;
-import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import frc.robot.Lights;
 
 /**
  * The VM is configured to automatically run this class, and to call the
@@ -26,18 +21,18 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
  * project.
  */
 public class Robot extends TimedRobot {
-  private static final String kDefaultAuto = "Default";
-  private static final String kCustomAuto = "My Auto";
-  private String m_autoSelected;
-  private final SendableChooser<String> m_chooser = new SendableChooser<>();
-  private CANSparkMax frontRight = new CANSparkMax(2, MotorType.kBrushless);
-  private CANSparkMax frontLeft = new CANSparkMax(7, MotorType.kBrushless);
-  private CANSparkMax backRight = new CANSparkMax(4, MotorType.kBrushless);
-  private CANSparkMax backLeft = new CANSparkMax(1, MotorType.kBrushless);
-  private DifferentialDrive drive;
-  XboxController controller = new XboxController(0);
-  Compressor phCompressor = new Compressor(0, PneumaticsModuleType.CTREPCM);
-  private Lights lights = new Lights();
+  CANSparkMax motor1 = new CANSparkMax(2, MotorType.kBrushless);
+  CANSparkMax motor2 = new CANSparkMax(1, MotorType.kBrushless);
+  {
+    motor2.follow(motor1);
+  }
+  {
+    motor2.follow(motor1);
+  }
+  // private static final String kDefaultAuto = "Default";
+  // private static final String kCustomAuto = "My Auto";
+  // private String m_autoSelected;
+  // private final SendableChooser<String> m_chooser = new SendableChooser<>();
 
   /**
    * This function is run when the robot is first started up and should be used
@@ -46,17 +41,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-    m_chooser.addOption("My Auto", kCustomAuto);
-    m_chooser.addOption("Nothing", "nothing");
-    m_chooser.addOption("Move", "move");
-    SmartDashboard.putData("Auto choices", m_chooser);
-    frontRight.setInverted(true);
-    backRight.follow(frontRight, false);
-    backLeft.follow(frontLeft, false);
-    drive = new DifferentialDrive(frontLeft, frontRight);
-    phCompressor.enableDigital();
-    lights.setColorSwitch();
+    // m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
+    // m_chooser.addOption("My Auto", kCustomAuto);
+    // SmartDashboard.putData("Auto choices", m_chooser);
   }
 
   /**
@@ -71,7 +58,6 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotPeriodic() {
-    lights.periodic();
   }
 
   /**
@@ -91,43 +77,37 @@ public class Robot extends TimedRobot {
    * them to the
    * chooser code above as well.
    */
-  long startTime = 0;
-
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-    System.out.println("Auto selected: " + m_autoSelected);
-    startTime = System.currentTimeMillis();
+    // m_autoSelected = m_chooser.getSelected();
+    // // m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
+    // System.out.println("Auto selected: " + m_autoSelected);
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    switch (m_autoSelected) {
-      case "move":
-        if (startTime + 3000 > System.currentTimeMillis()) {
-          drive.arcadeDrive(-.5, 0);
-        }
-        break;
-      case "nothing":
-      default:
-        // Put default auto code here
-        break;
-    }
+    // switch (m_autoSelected) {
+    // case kCustomAuto:
+    // // Put custom auto code here
+    // break;
+    // case kDefaultAuto:
+    // default:
+    // // Put default auto code here
+    // break;
+    // }
   }
 
   /** This function is called once when teleop is enabled. */
   @Override
   public void teleopInit() {
-
+    SmartDashboard.putNumber("Motor % Output", 0);
   }
 
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-    drive.arcadeDrive(-controller.getLeftY() * .75, -controller.getRightX() * .75);
-    // System.out.println(stick.getZ() + " " + stick.getY());
+    motor1.set(SmartDashboard.getNumber("Motor % Output", 0));
   }
 
   /** This function is called once when the robot is disabled. */
